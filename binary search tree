@@ -1,0 +1,178 @@
+#include<iostream>
+using namespace std;
+#include<queue>
+
+class Node{
+ public:
+  int data;
+  Node* right;
+  Node* left;
+
+  Node(int d){
+    this->data=d;
+    this->right=NULL;
+    this->left=NULL;
+  }
+
+
+
+
+};
+
+//function to find max and min node fron bst
+
+ 
+  Node* minval(Node* root){
+    Node* temp=root;
+    while(temp->left!=NULL){
+        temp=temp->left;
+
+    }
+    return temp;
+  }
+
+   Node* maxval(Node* root){
+    Node* temp=root;
+    while(temp->right!=NULL){
+        temp=temp->right;
+
+    }
+    return temp;
+  }
+
+  Node* deletenode(Node* root,int val){
+    if(root==NULL){
+        return root;
+    }
+    
+      if(root->data==val){
+       //0 child
+       if(root->left==NULL && root->right==NULL){
+        delete root;
+        return NULL;
+       }
+
+       //1 child
+      
+      //LEFT CHILD
+       if(root->left!=NULL && root->right==NULL){
+        Node* temp=root->left;
+        delete root;
+        return temp;
+       }
+
+
+      //RIGHT CHILD
+         if(root->left==NULL && root->right!=NULL){
+        Node* temp=root->right;
+        delete root;
+        return temp;
+       }
+
+
+       //2 child
+       if(root->left!=NULL && root->right!=NULL){
+        int mini=minval(root->right)->data;
+        root->data=mini;
+        root->right=deletenode(root->right,val);
+        return root;
+       }
+
+      }
+      else if(root->data>val){
+        root->left=deletenode(root->left,val);
+        return root;
+      }
+
+      else{
+        root->right=deletenode(root->right,val);
+          return root;
+      }
+  }
+  
+  //function to traverse the bst
+ void levelordertravelsal(Node* root){
+        //incliude a queue
+        queue< Node* > q;
+        q.push(root);
+        q.push(NULL);
+
+        while(!q.empty()){
+            Node* temp=q.front();
+           
+            q.pop();
+
+            if(temp==NULL){ //ik level pura hogya
+            cout<<endl;
+
+            if(!q.empty()){ //queue me abhi bhi elm hai
+            q.push(NULL);
+
+            }
+
+            }
+
+            else{
+                 cout<<temp->data<<" ";
+               if(temp->left){
+                q.push(temp->left);
+               }
+
+               if(temp->right){
+                q.push(temp->right);
+               }
+
+
+            }
+        }
+    }
+
+Node* insertinbst(Node* &root,int &d){
+    //base case
+    if(root==NULL){
+        root=new Node(d);
+        return root;
+    }
+
+    if(d > root->data){
+        //insert in right part
+        root->right=insertinbst(root->right,d);
+    }
+
+    else{
+        root->left=insertinbst(root->left,d);
+    }
+
+     return root;
+}
+
+void takeinput(Node* &root){
+
+    int data;
+    cin>>data;
+
+    while(data!=-1){
+       root= insertinbst(root,data);
+        cin>>data;
+    }
+}
+int main(){
+
+ Node* root=NULL;
+
+ cout<<"enter the data to build tree"<<endl;
+  takeinput(root);
+
+  cout<<"printing the binary search tree"<<endl;
+   levelordertravelsal(root);
+
+   //10 8 21 7 27 5 4 3 -1
+
+   root=deletenode(root,27);
+
+   cout<<"printing the binary search tree"<<endl;
+   levelordertravelsal(root);
+
+
+    return 0;
+}
